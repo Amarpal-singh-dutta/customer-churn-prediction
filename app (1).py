@@ -73,6 +73,6 @@ if st.button("Predict"):
     prediction = model.predict(input_data)[0]
 
     if prediction == 1:
-        st.error("⚠️ Customer is likely to CHURN")
+        st.error(" Customer is likely to CHURN")
     else:
-        st.success("✅ Customer is NOT likely to churn")
+        st.success(" Customer is NOT likely to churn")
