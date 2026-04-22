@@ -35,13 +35,14 @@ Built a complete churn prediction system on the IBM Telco dataset (~7,000 custom
 ### Model Comparison
 Five models compared via 5-fold Stratified Cross-Validation:
 
-| Model | CV Recall | CV F1 | CV ROC-AUC |
-|---|---|---|---|
-| Logistic Regression | **~0.80** | ~0.72 | ~0.85 |
-| Decision Tree | ~0.72 | ~0.68 | ~0.78 |
-| Random Forest | ~0.70 | ~0.73 | ~0.87 |
-| XGBoost | ~0.72 | ~0.74 | ~0.88 |
-| ANN (MLP) | ~0.74 | ~0.70 | ~0.84 |
+| Model               | CV Recall | CV F1  | CV ROC-AUC |
+| ------------------- | --------- | ------ | ---------- |
+| Logistic Regression | 0.7906    | 0.6317 | 0.8446     |
+| Decision Tree       | 0.5592    | 0.5251 | 0.6770     |
+| Random Forest       | 0.5712    | 0.5807 | 0.8217     |
+| XGBoost             | 0.5592    | 0.5744 | 0.8222     |
+| ANN (MLP)           | 0.6575    | 0.5803 | 0.7934     |
+
 
 > **Recall** is the primary metric — missing a churner is more costly than a false alarm.
 
