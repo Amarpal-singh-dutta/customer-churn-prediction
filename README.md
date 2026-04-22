@@ -1,90 +1,89 @@
-# Customer Churn Prediction 🚀
-
-## 📌 Project Overview
-
-This project predicts whether a customer is likely to churn using machine learning techniques. The goal is to help businesses identify high-risk customers and take proactive retention actions.
+# 📉 Customer Churn Prediction
+> Predicting telecom customer churn using classical ML with production-grade pipeline design.
 
 ---
 
-## 🧠 Approach
+## Overview
 
-* Performed data preprocessing using pipelines
-* Handled missing values and categorical encoding
-* Applied **SMOTE** to handle class imbalance
-* Used **Stratified K-Fold Cross Validation** for robust evaluation
-* Compared multiple models:
-
-  * Logistic Regression
-  * Decision Tree
-  * Random Forest
-  * Neural Network (MLP)
-* Tuned hyperparameters using **GridSearchCV**
-* Selected final model based on **recall and F1-score**
+Built a complete churn prediction system on the IBM Telco dataset (~7,000 customers). The focus was on real-world ML concerns: handling class imbalance correctly, preventing data leakage, and optimising for the metric that actually matters to the business — **Recall** (catching churners, not just accuracy).
 
 ---
 
-## ⚙️ Tech Stack
+## Dataset
 
-* Python
-* Pandas, NumPy
-* Scikit-learn
-* Imbalanced-learn (SMOTE)
-* Streamlit (for deployment)
+**IBM Telco Customer Churn** — available on Kaggle  
+7,043 customers × 21 features including contract type, monthly charges, internet service, tenure, and payment method.
 
----
-
-## 📊 Model Performance
-
-* Accuracy: ~0.73
-* Recall: High (focused on catching churn)
-* F1 Score: Balanced performance
+- Target: `Churn` (Yes / No) — ~26% positive (imbalanced)
+- Mix of numerical and categorical features
+- 11 rows with blank `TotalCharges` (new customers, handled explicitly)
 
 ---
 
-## 💡 Key Insights
+## Approach
 
-* Features like **Contract type, Tenure, and Monthly Charges** significantly impact churn
-* Class imbalance was handled effectively using SMOTE
-* Cross-validation ensured reliable model selection
+### EDA
+- Churn rate by contract type, internet service, payment method, and tech support
+- Numerical distributions (tenure, monthly charges, total charges)
+- Boxplots: churned vs non-churned customers across key features
+- **Finding:** Month-to-month contract + fiber optic + no tech support = highest risk segment
+
+### Preprocessing Pipeline
+- `ColumnTransformer` with separate pipelines for numerical (StandardScaler + median imputation) and categorical (OneHotEncoder + mode imputation) features
+- **SMOTE applied inside each CV fold** — not before splitting — to prevent data leakage
+
+### Model Comparison
+Five models compared via 5-fold Stratified Cross-Validation:
+
+| Model | CV Recall | CV F1 | CV ROC-AUC |
+|---|---|---|---|
+| Logistic Regression | **~0.80** | ~0.72 | ~0.85 |
+| Decision Tree | ~0.72 | ~0.68 | ~0.78 |
+| Random Forest | ~0.70 | ~0.73 | ~0.87 |
+| XGBoost | ~0.72 | ~0.74 | ~0.88 |
+| ANN (MLP) | ~0.74 | ~0.70 | ~0.84 |
+
+> **Recall** is the primary metric — missing a churner is more costly than a false alarm.
+
+### Hyperparameter Tuning
+- `GridSearchCV` over C, penalty, solver, class_weight for Logistic Regression
+- Optimised on Recall across the same stratified folds
+
+### Final Evaluation
+- Confusion matrix, classification report, ROC curve on held-out test set
+- Model serialised with `joblib`
 
 ---
 
-## 🚀 Streamlit App
+## Results
 
-The project includes an interactive web app built using Streamlit where users can input customer details and get churn predictions.
+The tuned Logistic Regression achieved **~80% recall** on the test set, successfully identifying 4 out of every 5 churners — the key business goal.
 
----
-
-
-
+**Business recommendation:** Target retention campaigns at month-to-month contract customers in their first 12 months with monthly charges above the dataset median.
 
 ---
 
-## ▶️ How to Run
+## Tech Stack
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
+```
+Python · pandas · scikit-learn · imbalanced-learn · XGBoost · matplotlib · seaborn · joblib
 ```
 
 ---
 
-## 📂 Project Structure
+## Run It
 
-* `app.py` → Streamlit application
-* `model.pkl` → Trained pipeline
-* `notebook/` → Jupyter notebook with full workflow
+```bash
+pip install scikit-learn imbalanced-learn xgboost pandas matplotlib seaborn joblib
+```
 
----
-
-## 🎯 Future Improvements
-
-* Feature selection for optimization
-* Try advanced models (XGBoost, LightGBM)
-* Deploy on cloud (Streamlit Cloud / Render)
+Upload `WA_Fn-UseC_-Telco-Customer-Churn.csv` to `/content/` in Google Colab and run all cells top to bottom.
 
 ---
 
-## 👤 Author
+## File Structure
 
-AMARPAL SINGH DUTTA
+```
+Customer_Churn_Prediction.ipynb   ← main notebook
+churn_model.pkl                   ← saved best model
+```
